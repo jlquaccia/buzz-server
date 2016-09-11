@@ -1,0 +1,15 @@
+<%= link_to 'Login with Instagram', Instagram.authorize_url(redirect_uri: ENV['REDIRECT_URI'], scope: 'basic public_content follower_list comments relationships likes') %>
+
+<h1>Get the list of users this user follows.</h1>
+
+<% if @user_follows_hash_version.present? %>
+  <%= @user_follows_hash_version %>
+<% end %>
+
+<h1>Get the most recent media published by a user.</h1>
+
+<% if @user_recent_media_hash_version['data'].present? %>
+  <% @user_recent_media_hash_version['data'].each do |item| %>
+    <%= item['location'] %>
+  <% end %>
+<% end %>
