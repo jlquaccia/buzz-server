@@ -1,15 +1,52 @@
 <%= link_to 'Login with Instagram', Instagram.authorize_url(redirect_uri: ENV['REDIRECT_URI'], scope: 'basic public_content follower_list comments relationships likes') %>
 
-<h1>Get the list of users this user follows.</h1>
+<h1>List of users that I follow.</h1>
 
+Data based on <%= @user_follows_hash_version['data'].count %> people I follow<br><br>
+
+<!-- =============================================================== -->
+<!-- LIST OF USERS I FOLLOW -->
+<!-- =============================================================== -->
 <% if @user_follows_hash_version.present? %>
-  <%= @user_follows_hash_version %>
+  <% @user_follows_hash_version['data'].each do |item| %>
+    <%= image_tag("#{item['profile_picture']}") %><br>
+    <%= item['full_name'] %><br>
+    Id: <%= item['id'] %><br><br>
+  <% end %>
 <% end %>
 
-<h1>Get the most recent media published by a user.</h1>
+<!-- =============================================================== -->
+<!-- MOST RECENT LOCATIONS I'VE BEEN TO -->
+<!-- =============================================================== -->
+<h1>Locations of most recent media published by my own account.</h1>
 
-<% if @user_recent_media_hash_version['data'].present? %>
-  <% @user_recent_media_hash_version['data'].each do |item| %>
-    <%= item['location'] %>
+<% if @user_self_recent_media_hash_version['data'].present? %>
+  <% @user_self_recent_media_hash_version['data'].each do |item| %>
+    <% if item['location'].present? %>
+      <%= item['location']['name'] %><br>
+      Latitude: <%= item['location']['latitude'] %><br>
+      Longitude: <%= item['location']['longitude'] %><br><br>
+    <% end %>
+  <% end %>
+<% end %>
+
+<!-- =============================================================== -->
+<!-- MOST RECENT LOCATIONS BY USERS I FOLLOW -->
+<!-- =============================================================== -->
+<h1>Locations of most recent media published by users I follow.</h1>
+
+<% @hash_version_array.each do |user| %>
+  <% if user['data'].present? %>
+    <% user['data'].each do |item| %>
+      <% if item['location'].present? %>
+        <%= image_tag("#{item['user']['profile_picture']}") %><br>
+        <%= item['user']['full_name'] %><br>
+        Id: <%= item['user']['id'] %><br><br>
+
+        <%= item['location']['name'] %><br>
+        Latitude: <%= item['location']['latitude'] %><br>
+        Longitude: <%= item['location']['longitude'] %><br><br>
+      <% end %>
+    <% end %>
   <% end %>
 <% end %>
